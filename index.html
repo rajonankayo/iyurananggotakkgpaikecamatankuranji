@@ -276,8 +276,13 @@
                         <span class="bg-green-100 p-2 rounded-lg mr-3"><i class="fas fa-clipboard-list text-green-600"></i></span>
                         Daftar Iuran
                     </h2>
-                    <div class="text-sm text-gray-600">
-                        Total: <span id="totalIuran" class="font-semibold text-green-600">Rp 0</span>
+                    <div class="flex items-center space-x-4">
+                        <button id="refreshData" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-colors">
+                            <i class="fas fa-sync-alt mr-1"></i>Refresh
+                        </button>
+                        <div class="text-sm text-gray-600">
+                            Total: <span id="totalIuran" class="font-semibold text-green-600">Rp 0</span>
+                        </div>
                     </div>
                 </div>
 
@@ -308,6 +313,9 @@
                         Rekapan Iuran Tahunan
                     </h2>
                     <div class="flex items-center space-x-4">
+                        <button id="refreshRekapan" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-colors">
+                            <i class="fas fa-sync-alt mr-1"></i>Refresh
+                        </button>
                         <select id="filterTahun" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             <option value="2024">2024</option>
                             <option value="2023">2023</option>
@@ -336,6 +344,9 @@
             </div>
         </div>
 
+        <!-- Status Sinkronisasi -->
+        <div id="syncStatus" class="mt-4 hidden"></div>
+
         <!-- Pengaturan Spreadsheet -->
         <div class="mt-8 bg-white rounded-xl shadow-lg p-6 hidden">
             <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -348,7 +359,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">URL Google Apps Script</label>
                     <input type="url" id="scriptUrl" 
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                           value="https://script.google.com/macros/s/AKfycby61R2ozHdA3USmpmsNHwfvQa78MLvkjImTgt7d0CkQLjuzcNdKqs_X0qnH-EYhgS72Uw/exec"
+                           value="https://script.google.com/macros/s/AKfycbxuNx9zDgCK6cSTcrLwSsbS6QLj5A9bAM1bVeO3NHfy45sntEohzVqLsuBdamEBdnG4yQ/exec"
                            placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec">
                     <p class="text-xs text-gray-500 mt-1">Masukkan URL dari Google Apps Script yang sudah dibuat</p>
                 </div>
@@ -371,14 +382,7 @@
                 </div>
             </div>
             
-            <div id="syncStatus" class="mt-4 hidden">
-                <div class="bg-gray-50 rounded-lg p-3">
-                    <div class="flex items-center">
-                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-                        <span class="text-sm text-gray-600">Menyinkronkan data...</span>
-                    </div>
-                </div>
-            </div>
+
             
             <!-- Petunjuk Setup -->
             <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -391,7 +395,7 @@
                     <li>Buka <a href="https://script.google.com" target="_blank" class="underline">Google Apps Script</a></li>
                     <li>Buat project baru dan salin kode yang disediakan di bawah</li>
                     <li><strong>PENTING:</strong> Ganti "YOUR_SPREADSHEET_ID" dengan ID spreadsheet Anda</li>
-                    <li>Klik "Deploy" ? "New deployment" ? pilih "Web app"</li>
+                    <li>Klik "Deploy" → "New deployment" → pilih "Web app"</li>
                     <li>Set "Execute as" = Me, "Who has access" = Anyone</li>
                     <li>Salin URL deployment dan masukkan di atas</li>
                     <li>Klik "Sinkronkan ke Sheets" untuk mulai menyimpan data</li>
@@ -450,32 +454,43 @@
         data.tanggalInput,
         new Date()
       ]);
+      
+      return ContentService
+        .createTextOutput(JSON.stringify({success: true, message: 'Data berhasil ditambahkan'}))
+        .setMimeType(ContentService.MimeType.JSON);
     }
     
     // Sinkronkan semua data
     if (data.action === 'sync') {
-      // Hapus data lama (kecuali header)
-      if (sheet.getLastRow() > 1) {
-        sheet.deleteRows(2, sheet.getLastRow() - 1);
+      // Hapus semua data lama (kecuali header)
+      const lastRow = sheet.getLastRow();
+      if (lastRow > 1) {
+        sheet.deleteRows(2, lastRow - 1);
       }
       
-      // Tambah semua data
-      data.allData.forEach(item => {
-        sheet.appendRow([
-          item.nama,
-          item.sekolah,
-          item.bulan, 
-          item.tahun,
-          item.jumlah,
-          item.keterangan,
-          item.tanggalInput,
-          new Date()
-        ]);
-      });
+      // Tulis ulang semua data
+      if (data.allData && data.allData.length > 0) {
+        data.allData.forEach(item => {
+          sheet.appendRow([
+            item.nama || '',
+            item.sekolah || '',
+            item.bulan || '', 
+            item.tahun || 0,
+            item.jumlah || 0,
+            item.keterangan || '',
+            item.tanggalInput || '',
+            new Date()
+          ]);
+        });
+      }
+      
+      return ContentService
+        .createTextOutput(JSON.stringify({success: true, message: `Data berhasil disinkronkan. Total ${data.allData ? data.allData.length : 0} record`}))
+        .setMimeType(ContentService.MimeType.JSON);
     }
     
     return ContentService
-      .createTextOutput(JSON.stringify({success: true}))
+      .createTextOutput(JSON.stringify({success: false, error: 'Action tidak dikenali'}))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
@@ -485,10 +500,49 @@
   }
 }
 
-function doGet() {
-  return ContentService
-    .createTextOutput('KKG PAI Iuran API is running')
-    .setMimeType(ContentService.MimeType.TEXT);
+function doGet(e) {
+  try {
+    const action = e.parameter.action;
+    
+    if (action === 'get') {
+      const spreadsheetId = 'YOUR_SPREADSHEET_ID'; // Ganti dengan ID spreadsheet Anda
+      const sheet = SpreadsheetApp.openById(spreadsheetId).getActiveSheet();
+      
+      // Jika sheet kosong, return data kosong
+      if (sheet.getLastRow() <= 1) {
+        return ContentService
+          .createTextOutput(JSON.stringify({success: true, data: []}))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      // Ambil semua data (skip header row)
+      const range = sheet.getRange(2, 1, sheet.getLastRow() - 1, 8);
+      const values = range.getValues();
+      
+      const data = values.map(row => ({
+        nama: row[0] || '',
+        sekolah: row[1] || '',
+        bulan: row[2] || '',
+        tahun: parseInt(row[3]) || 0,
+        jumlah: parseInt(row[4]) || 0,
+        keterangan: row[5] || '',
+        tanggalInput: row[6] || ''
+      })).filter(item => item.nama); // Filter out empty rows
+      
+      return ContentService
+        .createTextOutput(JSON.stringify({success: true, data: data}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    return ContentService
+      .createTextOutput('KKG PAI Iuran API is running')
+      .setMimeType(ContentService.MimeType.TEXT);
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({success: false, error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }</code></pre>
                     </div>
                 </div>
@@ -582,7 +636,7 @@ function doGet() {
     <script>
         let dataIuran = JSON.parse(localStorage.getItem('dataIuranKKG')) || [];
         let activeTab = 'input';
-        let scriptUrl = localStorage.getItem('scriptUrl') || 'https://script.google.com/macros/s/AKfycby61R2ozHdA3USmpmsNHwfvQa78MLvkjImTgt7d0CkQLjuzcNdKqs_X0qnH-EYhgS72Uw/exec';
+        let scriptUrl = localStorage.getItem('scriptUrl') || 'https://script.google.com/macros/s/AKfycbxuNx9zDgCK6cSTcrLwSsbS6QLj5A9bAM1bVeO3NHfy45sntEohzVqLsuBdamEBdnG4yQ/exec';
         let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
         // Kredensial login (dalam aplikasi nyata, ini harus disimpan dengan aman)
@@ -597,32 +651,159 @@ function doGet() {
         // Fungsi untuk mengirim data ke Google Sheets
         async function sendToSheets(data, action = 'add') {
             if (!scriptUrl) {
-                alert('Harap masukkan URL Google Apps Script terlebih dahulu!');
+                console.log('No script URL configured, skipping sync');
                 return false;
             }
 
             try {
-                const payload = action === 'sync' ? 
-                    { action: 'sync', allData: dataIuran } : 
-                    { action: 'add', ...data };
+                let payload;
+                
+                if (action === 'sync') {
+                    payload = { action: 'sync', allData: dataIuran };
+                    console.log('Sync payload:', { action: 'sync', dataCount: dataIuran.length });
+                } else {
+                    payload = { action: 'add', ...data };
+                    console.log('Add payload:', payload);
+                }
 
-                console.log('Sending to sheets:', payload);
+                console.log('Sending to sheets URL:', scriptUrl);
+                console.log('Full payload:', JSON.stringify(payload, null, 2));
 
                 const response = await fetch(scriptUrl, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(payload)
                 });
 
-                // Karena mode no-cors, kita tidak bisa membaca response
-                // Jadi kita anggap berhasil jika tidak ada error
-                return true;
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+
+                if (response.ok) {
+                    try {
+                        const result = await response.text();
+                        console.log('Response text:', result);
+                        
+                        // Coba parse sebagai JSON
+                        const jsonResult = JSON.parse(result);
+                        console.log('Parsed response:', jsonResult);
+                        
+                        return jsonResult.success === true;
+                    } catch (parseError) {
+                        console.log('Could not parse response as JSON, assuming success');
+                        return true;
+                    }
+                } else {
+                    console.error('HTTP error:', response.status, response.statusText);
+                    return false;
+                }
             } catch (error) {
                 console.error('Error sending to sheets:', error);
                 return false;
+            }
+        }
+
+        // Fungsi untuk mengambil data dari Google Sheets
+        async function fetchFromSheets() {
+            if (!scriptUrl) {
+                console.log('No script URL configured, using local data only');
+                return dataIuran;
+            }
+
+            try {
+                console.log('Fetching data from sheets...');
+                
+                // Gunakan URL dengan parameter untuk GET request
+                const getUrl = scriptUrl + '?action=get';
+                const response = await fetch(getUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success && result.data) {
+                        console.log('Successfully fetched data from sheets:', result.data.length, 'records');
+                        return result.data;
+                    }
+                }
+                
+                console.log('Failed to fetch from sheets, using local data');
+                return dataIuran;
+            } catch (error) {
+                console.error('Error fetching from sheets:', error);
+                console.log('Using local data as fallback');
+                return dataIuran;
+            }
+        }
+
+        // Fungsi untuk sinkronisasi otomatis saat reload
+        async function autoSyncOnLoad() {
+            if (!scriptUrl) {
+                console.log('No script URL configured, skipping auto-sync');
+                return;
+            }
+
+            console.log('Auto-syncing data on page load...');
+            
+            // Tampilkan indikator loading kecil
+            const statusDiv = document.getElementById('syncStatus');
+            if (statusDiv) {
+                statusDiv.classList.remove('hidden');
+                statusDiv.innerHTML = `
+                    <div class="bg-blue-50 rounded-lg p-2">
+                        <div class="flex items-center">
+                            <div class="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600 mr-2"></div>
+                            <span class="text-xs text-blue-600">Memuat data dari spreadsheet...</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            try {
+                // Ambil data terbaru dari spreadsheet
+                const sheetData = await fetchFromSheets();
+                
+                if (sheetData && sheetData.length > 0) {
+                    // Update data lokal dengan data dari spreadsheet
+                    dataIuran = sheetData;
+                    localStorage.setItem('dataIuranKKG', JSON.stringify(dataIuran));
+                    
+                    // Update tampilan
+                    tampilkanDaftarIuran();
+                    updateStatistik();
+                    if (activeTab === 'rekapan') {
+                        tampilkanRekapan();
+                    }
+                    
+                    console.log('Auto-sync successful, loaded', sheetData.length, 'records');
+                    if (statusDiv) {
+                        statusDiv.innerHTML = `
+                            <div class="bg-green-50 rounded-lg p-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-600 mr-2 text-xs"></i>
+                                    <span class="text-xs text-green-600">Data terbaru dimuat (${sheetData.length} record)</span>
+                                </div>
+                            </div>
+                        `;
+                        setTimeout(() => {
+                            statusDiv.classList.add('hidden');
+                        }, 3000);
+                    }
+                } else {
+                    console.log('No data from sheets or fetch failed');
+                    if (statusDiv) {
+                        statusDiv.classList.add('hidden');
+                    }
+                }
+            } catch (error) {
+                console.error('Auto-sync error:', error);
+                if (statusDiv) {
+                    statusDiv.classList.add('hidden');
+                }
             }
         }
 
@@ -873,23 +1054,13 @@ function doGet() {
                             </div>
                             ${item.keterangan ? `<p class="text-xs text-gray-500 mt-1">${item.keterangan}</p>` : ''}
                         </div>
-                        <button onclick="hapusIuran(${index})" 
-                                class="text-red-500 hover:text-red-700 ml-4 p-1">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+
                     </div>
                 </div>
             `).join('');
         }
 
-        function hapusIuran(index) {
-            if (confirm('Yakin ingin menghapus data iuran ini?')) {
-                dataIuran.splice(index, 1);
-                localStorage.setItem('dataIuranKKG', JSON.stringify(dataIuran));
-                tampilkanDaftarIuran();
-                updateStatistik();
-            }
-        }
+
 
         document.getElementById('iuranForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -911,18 +1082,31 @@ function doGet() {
                 tanggalInput: new Date().toLocaleDateString('id-ID')
             };
 
+            // Tampilkan loading pada tombol submit
+            const button = document.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
+            button.disabled = true;
+
             // Simpan ke localStorage
             dataIuran.push(dataIuranBaru);
             localStorage.setItem('dataIuranKKG', JSON.stringify(dataIuran));
             
-            // Kirim ke Google Sheets jika URL sudah diatur
+            // Otomatis kirim ke Google Sheets jika URL sudah diatur
             if (scriptUrl) {
-                const success = await sendToSheets(dataIuranBaru, 'add');
-                if (success) {
-                    showSyncStatus('Data berhasil disimpan ke Google Sheets!', true);
-                } else {
-                    showSyncStatus('Gagal menyimpan ke Google Sheets. Data tetap tersimpan lokal.', false);
+                try {
+                    const success = await sendToSheets(dataIuranBaru, 'add');
+                    if (success) {
+                        showSyncStatus('Data berhasil disimpan dan tersinkron ke Google Sheets!', true);
+                    } else {
+                        showSyncStatus('Data tersimpan lokal. Gagal sinkron ke Google Sheets.', false);
+                    }
+                } catch (error) {
+                    console.error('Sync error:', error);
+                    showSyncStatus('Data tersimpan lokal. Gagal sinkron ke Google Sheets.', false);
                 }
+            } else {
+                showSyncStatus('Data tersimpan lokal. Belum ada konfigurasi Google Sheets.', true);
             }
             
             // Reset form
@@ -938,11 +1122,11 @@ function doGet() {
             // Fokus kembali ke input nama
             document.getElementById('namaAnggota').focus();
             
-            // Notifikasi sukses
-            const button = document.querySelector('button[type="submit"]');
-            const originalText = button.innerHTML;
+            // Restore tombol submit
             button.innerHTML = '<i class="fas fa-check mr-2"></i>Data Tersimpan!';
             button.classList.add('bg-green-600');
+            button.disabled = false;
+            
             setTimeout(() => {
                 button.innerHTML = originalText;
                 button.classList.remove('bg-green-600');
@@ -1013,6 +1197,77 @@ function doGet() {
         // Event listeners untuk rekapan
         document.getElementById('filterTahun').addEventListener('change', tampilkanRekapan);
         document.getElementById('searchRekapan').addEventListener('input', tampilkanRekapan);
+
+        // Event listeners untuk refresh data
+        document.getElementById('refreshData').addEventListener('click', async function() {
+            const button = this;
+            const originalText = button.innerHTML;
+            
+            // Tampilkan loading
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Loading...';
+            button.disabled = true;
+            
+            try {
+                // Ambil data terbaru dari spreadsheet
+                const sheetData = await fetchFromSheets();
+                
+                if (sheetData && sheetData.length >= 0) {
+                    // Update data lokal dengan data dari spreadsheet
+                    dataIuran = sheetData;
+                    localStorage.setItem('dataIuranKKG', JSON.stringify(dataIuran));
+                    
+                    // Update tampilan
+                    tampilkanDaftarIuran();
+                    updateStatistik();
+                    
+                    showSyncStatus(`Data berhasil diperbarui! Memuat ${sheetData.length} record dari spreadsheet.`, true);
+                } else {
+                    showSyncStatus('Gagal memuat data dari spreadsheet. Menggunakan data lokal.', false);
+                }
+            } catch (error) {
+                console.error('Refresh error:', error);
+                showSyncStatus('Gagal memuat data dari spreadsheet. Periksa koneksi internet.', false);
+            }
+            
+            // Restore tombol
+            button.innerHTML = originalText;
+            button.disabled = false;
+        });
+
+        document.getElementById('refreshRekapan').addEventListener('click', async function() {
+            const button = this;
+            const originalText = button.innerHTML;
+            
+            // Tampilkan loading
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Loading...';
+            button.disabled = true;
+            
+            try {
+                // Ambil data terbaru dari spreadsheet
+                const sheetData = await fetchFromSheets();
+                
+                if (sheetData && sheetData.length >= 0) {
+                    // Update data lokal dengan data dari spreadsheet
+                    dataIuran = sheetData;
+                    localStorage.setItem('dataIuranKKG', JSON.stringify(dataIuran));
+                    
+                    // Update tampilan rekapan
+                    tampilkanRekapan();
+                    updateStatistik();
+                    
+                    showSyncStatus(`Rekapan berhasil diperbarui! Memuat ${sheetData.length} record dari spreadsheet.`, true);
+                } else {
+                    showSyncStatus('Gagal memuat data dari spreadsheet. Menggunakan data lokal.', false);
+                }
+            } catch (error) {
+                console.error('Refresh rekapan error:', error);
+                showSyncStatus('Gagal memuat data dari spreadsheet. Periksa koneksi internet.', false);
+            }
+            
+            // Restore tombol
+            button.innerHTML = originalText;
+            button.disabled = false;
+        });
 
         // Fungsi test koneksi
         async function testConnection() {
@@ -1119,7 +1374,11 @@ function doGet() {
         
         tampilkanDaftarIuran();
         updateStatistik();
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98b3443877a062dc',t:'MTc1OTkwMTYzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
 
+        // Jalankan sinkronisasi otomatis saat halaman dimuat
+        setTimeout(() => {
+            autoSyncOnLoad();
+        }, 1000); // Delay 1 detik untuk memastikan semua elemen sudah dimuat
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98b3ed461258fd2c',t:'MTc1OTkwODU2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
