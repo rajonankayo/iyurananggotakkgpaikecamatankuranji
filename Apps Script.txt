@@ -58,8 +58,47 @@ function doPost(e) {
   }
 }
 
-function doGet() {
-  return ContentService
-    .createTextOutput('KKG PAI Iuran API is running')
-    .setMimeType(ContentService.MimeType.TEXT);
+function doGet(e) {
+  try {
+    const action = e.parameter.action;
+    
+    if (action === 'get') {
+      const spreadsheetId = '12kop7HZ3Qne_sVgdADn7T4kZn0QfW7rwD2EAPkd7U4c'; // Ganti dengan ID spreadsheet Anda
+      const sheet = SpreadsheetApp.openById(spreadsheetId).getActiveSheet();
+      
+      // Jika sheet kosong, return data kosong
+      if (sheet.getLastRow() <= 1) {
+        return ContentService
+          .createTextOutput(JSON.stringify({success: true, data: []}))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      // Ambil semua data (skip header row)
+      const range = sheet.getRange(2, 1, sheet.getLastRow() - 1, 8);
+      const values = range.getValues();
+      
+      const data = values.map(row => ({
+        nama: row[0] || '',
+        sekolah: row[1] || '',
+        bulan: row[2] || '',
+        tahun: parseInt(row[3]) || 0,
+        jumlah: parseInt(row[4]) || 0,
+        keterangan: row[5] || '',
+        tanggalInput: row[6] || ''
+      })).filter(item => item.nama); // Filter out empty rows
+      
+      return ContentService
+        .createTextOutput(JSON.stringify({success: true, data: data}))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    return ContentService
+      .createTextOutput('KKG PAI Iuran API is running')
+      .setMimeType(ContentService.MimeType.TEXT);
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({success: false, error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
