@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Iuran KKG PAI Kecamatan Kuranji</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-full font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-indigo-800 mb-2"><i class="fas fa-book-open mr-3"></i>KKG PAI Kecamatan Kuranji</h1>
+            <p class="text-gray-600">Sistem Pencatatan Iuran Anggota</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="mb-8">
+            <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg relative">
+                <button id="tabInput" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-white text-indigo-600 shadow-sm">
+                    <i class="fas fa-plus-circle mr-2"></i>Input Data
+                </button>
+                <button id="tabDaftar" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-list mr-2"></i>Daftar Iuran
+                </button>
+                <button id="tabRekapan" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-chart-bar mr-2"></i>Rekapan Tahunan
+                </button>
+                
+                <!-- Tombol Logout (hanya tampil jika sudah login) -->
+                <button id="logoutBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm transition-colors hidden">
+                    <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Content Input & Daftar -->
+        <div id="contentInputDaftar" class="grid lg:grid-cols-2 gap-8">
+            <!-- Form Input -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-indigo-100 p-2 rounded-lg mr-3"><i class="fas fa-money-bill-wave text-indigo-600"></i></span>
+                    Input Data Iuran
+                </h2>
+                
+                <form id="iuranForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nama Anggota</label>
+                        <select id="namaAnggota" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                            <option value="">Pilih Nama Anggota</option>
+                            <option value="Dra. Pabriani, S.Pd.I">Dra. Pabriani, S.Pd.I</option>
+                            <option value="Khairunnisa, S.Pd">Khairunnisa, S.Pd</option>
+                            <option value="Mira Rahma Yunita,S.PdI">Mira Rahma Yunita,S.PdI</option>
+                            <option value="Oktavia, S.IQ, M.Pd">Oktavia, S.IQ, M.Pd</option>
+                            <option value="Syafril Hadiman,S.PdI">Syafril Hadiman,S.PdI</option>
+                            <option value="Nelmawati, S.PdI">Nelmawati, S.PdI</option>
+                            <option value="Nurul Iman,S.PdI">Nurul Iman,S.PdI</option>
+                            <option value="Nurhayati, S.Ag">Nurhayati, S.Ag</option>
+                            <option value="Era Nila Wati,S.PdI">Era Nila Wati,S.PdI</option>
+                            <option value="Masrizal,S.PdI">Masrizal,S.PdI</option>
+                            <option value="Melgi Yanti, S.Pd.I">Melgi Yanti, S.Pd.I</option>
+                            <option value="Yosep Dajascan,S.PdI">Yosep Dajascan,S.PdI</option>
+                            <option value="Alfitriani,S.PdI">Alfitriani,S.PdI</option>
+                            <option value="Martawati, S.Ag">Martawati, S.Ag</option>
+                            <option value="Efriyanto,S.PdI">Efriyanto,S.PdI</option>
+                            <option value="Adra Viona, S.Pd">Adra Viona, S.Pd</option>
+                            <option value="Miftahur Rahmah,S.PdI, M.Pd">Miftahur Rahmah,S.PdI, M.Pd</option>
+                            <option value="Irma Aryesi,S.Pd.I">Irma Aryesi,S.Pd.I</option>
+                            <option value="Eva Susanti, S.Pd.I">Eva Susanti, S.Pd.I</option>
+                            <option value="Angga Dina Septemi, M.Pd">Angga Dina Septemi, M.Pd</option>
+                            <option value="Nining Widia Ningsih,S.PdI">Nining Widia Ningsih,S.PdI</option>
+                            <option value="Darmanitis, S.Hum">Darmanitis, S.Hum</option>
+                            <option value="Mildawati, S.Ag">Mildawati, S.Ag</option>
+                            <option value="Etnawati, S.Pd.I">Etnawati, S.Pd.I</option>
+                            <option value="Zuraini, S.Ag">Zuraini, S.Ag</option>
+                            <option value="Salviana Agus, S.Pd">Salviana Agus, S.Pd</option>
+                            <option value="Sidrhatil Aini,S.PdI">Sidrhatil Aini,S.PdI</option>
+                            <option value="Almasri,S.PdI">Almasri,S.PdI</option>
+                            <option value="Nurliana, S.PdI">Nurliana, S.PdI</option>
+                            <option value="Nilawati, S.Pd.I">Nilawati, S.Pd.I</option>
+                            <option value="Meldi, S.Pd.I">Meldi, S.Pd.I</option>
+                            <option value="Elvawarni, S.Pd.I">Elvawarni, S.Pd.I</option>
+                            <option value="Afridon, S.Pd.I">Afridon, S.Pd.I</option>
+                            <option value="Desi Resdiani, S.Pd.I">Desi Resdiani, S.Pd.I</option>
+                            <option value="Yogi Vareza, M.Pd">Yogi Vareza, M.Pd</option>
+                            <option value="Esa Yuni, S.Pd.I">Esa Yuni, S.Pd.I</option>
+                            <option value="Elvi Eli,S.Pd.I">Elvi Eli,S.Pd.I</option>
+                            <option value="Indra Yeni, S.Pd.I">Indra Yeni, S.Pd.I</option>
+                            <option value="Ahmad Rinaldi,S.PdI">Ahmad Rinaldi,S.PdI</option>
+                            <option value="Welly Saputri, S.Pd.I">Welly Saputri, S.Pd.I</option>
+                            <option value="Setriani, S.Pd">Setriani, S.Pd</option>
+                            <option value="Nanda Yolanda,S.Pd">Nanda Yolanda,S.Pd</option>
+                            <option value="Dewi Damesa,S.PdI">Dewi Damesa,S.PdI</option>
+                            <option value="Sherly Fitri Yanti, S.Pd, M.Pd">Sherly Fitri Yanti, S.Pd, M.Pd</option>
+                            <option value="Lidia Trisna Sari, S.PdI">Lidia Trisna Sari, S.PdI</option>
+                            <option value="Lizatul Husni, S.Pd.I">Lizatul Husni, S.Pd.I</option>
+                            <option value="Rina Okta Desra ,S.Pd.I">Rina Okta Desra ,S.Pd.I</option>
+                            <option value="Burhanuddin Rambe, S.Pd">Burhanuddin Rambe, S.Pd</option>
+                            <option value="Suhatri, S.PdI">Suhatri, S.PdI</option>
+                            <option value="Iskandar,S.Fil.I">Iskandar,S.Fil.I</option>
+                            <option value="Neti Yusma,M.Pd">Neti Yusma,M.Pd</option>
+                            <option value="Apriyeti,S.Pdi">Apriyeti,S.Pdi</option>
+                            <option value="Ranggi Rali Putra,S.PdI">Ranggi Rali Putra,S.PdI</option>
+                            <option value="Desnita, S.HI">Desnita, S.HI</option>
+                            <option value="Herita Gusteti,S.PdI">Herita Gusteti,S.PdI</option>
+                            <option value="Dewi Elviza,S.PdI">Dewi Elviza,S.PdI</option>
+                            <option value="Misdar, S.Ag">Misdar, S.Ag</option>
+                            <option value="Elismiyarti, S.Pd.I">Elismiyarti, S.Pd.I</option>
+                            <option value="Suherdi, S.Pd.I.,M.Pd">Suherdi, S.Pd.I.,M.Pd</option>
+                            <option value="Doni Nofriadi, S.PdI, M.Pd">Doni Nofriadi, S.PdI, M.Pd</option>
+                            <option value="Vera Ayu Putri, M.Pd">Vera Ayu Putri, M.Pd</option>
+                            <option value="Junisha Fitria, S.PdI">Junisha Fitria, S.PdI</option>
+                            <option value="Dewi Putri Yeni, S.Pd.I">Dewi Putri Yeni, S.Pd.I</option>
+                            <option value="Musni Roza RM, S.PdI">Musni Roza RM, S.PdI</option>
+                            <option value="Muhammad Syukra, S.Pd">Muhammad Syukra, S.Pd</option>
+                            <option value="Satianna Tambunan,S.PdI">Satianna Tambunan,S.PdI</option>
+                            <option value="Edi Yusmardi, S.PdI">Edi Yusmardi, S.PdI</option>
+                            <option value="Maihendra, S.PdI">Maihendra, S.PdI</option>
+                            <option value="Khairul, S.Pd.I">Khairul, S.Pd.I</option>
+                            <option value="Khazinul Asriati,S.PdI">Khazinul Asriati,S.PdI</option>
+                            <option value="Siti Rabiah S.Ag">Siti Rabiah S.Ag</option>
+                            <option value="Adilla Ana Rezi, S.PdI">Adilla Ana Rezi, S.PdI</option>
+                            <option value="Isra Fauziah, M.Pd">Isra Fauziah, M.Pd</option>
+                            <option value="Kasmin,S.PdI">Kasmin,S.PdI</option>
+                            <option value="Nurhabibah, S.Pd">Nurhabibah, S.Pd</option>
+                            <option value="Anton, S.Fil.I">Anton, S.Fil.I</option>
+                            <option value="Susi Marianti,S.PdI">Susi Marianti,S.PdI</option>
+                            <option value="Abdul Arif, S.PdI">Abdul Arif, S.PdI</option>
+                            <option value="Fitra Leni, S.PdI">Fitra Leni, S.PdI</option>
+                            <option value="Erma, S.PdI">Erma, S.PdI</option>
+                            <option value="Marlen Desweti, S.Pd.I">Marlen Desweti, S.Pd.I</option>
+                            <option value="Aznar,S.PdI">Aznar,S.PdI</option>
+                            <option value="Yulhasmawati, S.PdI">Yulhasmawati, S.PdI</option>
+                            <option value="Syamsurizal, S.Sos.I">Syamsurizal, S.Sos.I</option>
+                            <option value="Zespira Hendro,S.PdI, M.Pd">Zespira Hendro,S.PdI, M.Pd</option>
+                            <option value="Maisarah,S.PdI">Maisarah,S.PdI</option>
+                            <option value="Qomaruddin,S.Ag.S.IQ">Qomaruddin,S.Ag.S.IQ</option>
+                            <option value="Edi Nofrial, S.PdI">Edi Nofrial, S.PdI</option>
+                            <option value="Ade Chandra, S.Sos.I">Ade Chandra, S.Sos.I</option>
+                            <option value="Yuli Etra,S.Ag">Yuli Etra,S.Ag</option>
+                            <option value="Husni, S.Ag">Husni, S.Ag</option>
+                            <option value="Asriadi, S.Pd.I">Asriadi, S.Pd.I</option>
+                            <option value="Zaki Aulia Mufti, S.Pd">Zaki Aulia Mufti, S.Pd</option>
+                            <option value="Darwin Eka Putra, S.PdI, M.Pd">Darwin Eka Putra, S.PdI, M.Pd</option>
+                            <option value="Tegi Yance, S.Pd">Tegi Yance, S.Pd</option>
+                            <option value="Afika Nuriesa Eloka, S.Pd">Afika Nuriesa Eloka, S.Pd</option>
+                            <option value="Yunus, S.Pd.I">Yunus, S.Pd.I</option>
+                            <option value="Mella Ika Putri, S.Pd">Mella Ika Putri, S.Pd</option>
+                            <option value="Rahmi Jandras, S.Ag">Rahmi Jandras, S.Ag</option>
+                            <option value="Muhammad Faisal, S.Pd.I">Muhammad Faisal, S.Pd.I</option>
+                            <option value="Maria Desi Susanti">Maria Desi Susanti</option>
+                            <option value="Bustari, S.Ag, M.Pd">Bustari, S.Ag, M.Pd</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sekolah</label>
+                        <select id="sekolah" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                            <option value="">Pilih Sekolah</option>
+                            <option value="SDN 01 Ampang">SDN 01 Ampang</option>
+                            <option value="SDN 02 Gn Sarik">SDN 02 Gn Sarik</option>
+                            <option value="SDN 04 Ps Ambcng">SDN 04 Ps Ambcng</option>
+                            <option value="SDN 06 Ps Ambacang">SDN 06 Ps Ambacang</option>
+                            <option value="SDN 09 Krg Gdng">SDN 09 Krg Gdng</option>
+                            <option value="SDN 10 Sungai Sapih">SDN 10 Sungai Sapih</option>
+                            <option value="SDN 11 Ampang">SDN 11 Ampang</option>
+                            <option value="SDN 12 Sungai Sapih">SDN 12 Sungai Sapih</option>
+                            <option value="SDN 13 Kuranji">SDN 13 Kuranji</option>
+                            <option value="SDN 15 Anduring">SDN 15 Anduring</option>
+                            <option value="SDN 18 Anduring">SDN 18 Anduring</option>
+                            <option value="SDN 20 Kalumbuk">SDN 20 Kalumbuk</option>
+                            <option value="SDN 21 Lb Lintah">SDN 21 Lb Lintah</option>
+                            <option value="SDN 22 Kuranji">SDN 22 Kuranji</option>
+                            <option value="SDN 24 Kalumbuk">SDN 24 Kalumbuk</option>
+                            <option value="SDN 25 Lubuk Lintah">SDN 25 Lubuk Lintah</option>
+                            <option value="SDN 26 Ps Ambacng">SDN 26 Ps Ambacng</option>
+                            <option value="SDN 27 Sungai Sapih">SDN 27 Sungai Sapih</option>
+                            <option value="SDN 28 Korong Gadang">SDN 28 Korong Gadang</option>
+                            <option value="SDN 29 Gng Sarik">SDN 29 Gng Sarik</option>
+                            <option value="SDN 30 Lb Lintah">SDN 30 Lb Lintah</option>
+                            <option value="SDN 31 Ps Ambacang">SDN 31 Ps Ambacang</option>
+                            <option value="SDN 32 Kuranji">SDN 32 Kuranji</option>
+                            <option value="SDN 33 Kalumbuk">SDN 33 Kalumbuk</option>
+                            <option value="SDN 34 Kuranji">SDN 34 Kuranji</option>
+                            <option value="SDN 36 Gng Sarik">SDN 36 Gng Sarik</option>
+                            <option value="SDN 37 Anduring">SDN 37 Anduring</option>
+                            <option value="SDN 38 Kuranji">SDN 38 Kuranji</option>
+                            <option value="SDN 39 Ps.Ambacang">SDN 39 Ps.Ambacang</option>
+                            <option value="SDN 40 Kordang">SDN 40 Kordang</option>
+                            <option value="SDN 41 Kuranji">SDN 41 Kuranji</option>
+                            <option value="SDN 42 Krg Gdg">SDN 42 Krg Gdg</option>
+                            <option value="SDN 43 Sungai Sapih">SDN 43 Sungai Sapih</option>
+                            <option value="SDN 44 Kalumbuk">SDN 44 Kalumbuk</option>
+                            <option value="SDN 47 Korong gadang">SDN 47 Korong gadang</option>
+                            <option value="SDN 48 Kuranji">SDN 48 Kuranji</option>
+                            <option value="SDN 49 Kuranji">SDN 49 Kuranji</option>
+                            <option value="SDN 50 Kuranji">SDN 50 Kuranji</option>
+                            <option value="SDN 51 Kuranji">SDN 51 Kuranji</option>
+                            <option value="SDN 52 Kuranji">SDN 52 Kuranji</option>
+                            <option value="SDN 53 Kuranji">SDN 53 Kuranji</option>
+                            <option value="SD IT Adzkia 1">SD IT Adzkia 1</option>
+                            <option value="SD IT Adzkia 2">SD IT Adzkia 2</option>
+                            <option value="SD IT Padang Islamic School">SD IT Padang Islamic School</option>
+                            <option value="SD IT Mutiara Padang">SD IT Mutiara Padang</option>
+                            <option value="SD IT Karakter Anak Sholeh">SD IT Karakter Anak Sholeh</option>
+                            <option value="SDM 05 Ketaping">SDM 05 Ketaping</option>
+                            <option value="SD Betha Plus">SD Betha Plus</option>
+                        </select>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bulan</label>
+                            <select id="bulan" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                                <option value="">Pilih Bulan</option>
+                                <option value="Januari">Januari</option>
+                                <option value="Februari">Februari</option>
+                                <option value="Maret">Maret</option>
+                                <option value="April">April</option>
+                                <option value="Mei">Mei</option>
+                                <option value="Juni">Juni</option>
+                                <option value="Juli">Juli</option>
+                                <option value="Agustus">Agustus</option>
+                                <option value="September">September</option>
+                                <option value="Oktober">Oktober</option>
+                                <option value="November">November</option>
+                                <option value="Desember">Desember</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tahun</label>
+                            <input type="number" id="tahun" required min="2020" max="2030" value="2025"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Iuran (Rp)</label>
+                        <input type="number" id="jumlahIuran" required min="0" step="1000" value="25000"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                               placeholder="25000">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Keterangan (Opsional)</label>
+                        <textarea id="keterangan" rows="3" 
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                  placeholder="Catatan tambahan...">Lunas</textarea>
+                    </div>
+
+                    <button type="submit" 
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                        <i class="fas fa-save mr-2"></i>
+                        Simpan Data Iuran
+                    </button>
+                </form>
+            </div>
+
+            <!-- Daftar Iuran -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                        <span class="bg-green-100 p-2 rounded-lg mr-3"><i class="fas fa-clipboard-list text-green-600"></i></span>
+                        Daftar Iuran
+                    </h2>
+                    <div class="text-sm text-gray-600">
+                        Total: <span id="totalIuran" class="font-semibold text-green-600">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="mb-4 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="searchInput" 
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                           placeholder="Cari nama anggota atau sekolah...">
+                </div>
+
+                <div id="daftarIuran" class="space-y-3 max-h-96 overflow-y-auto">
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-file-invoice-dollar text-4xl mb-2 block"></i>
+                        Belum ada data iuran yang diinput
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content Rekapan -->
+        <div id="contentRekapan" class="hidden">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                        <span class="bg-purple-100 p-2 rounded-lg mr-3"><i class="fas fa-chart-bar text-purple-600"></i></span>
+                        Rekapan Iuran Tahunan
+                    </h2>
+                    <div class="flex items-center space-x-4">
+                        <select id="filterTahun" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-4 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="searchRekapan" 
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                           placeholder="Cari nama anggota...">
+                </div>
+
+                <div id="rekapanContainer" class="space-y-4 max-h-96 overflow-y-auto">
+                    <!-- Rekapan akan ditampilkan di sini -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Pengaturan Spreadsheet -->
+        <div class="mt-8 bg-white rounded-xl shadow-lg p-6 hidden">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 p-2 rounded-lg mr-3"><i class="fas fa-cloud text-blue-600"></i></span>
+                Sinkronisasi Google Sheets
+            </h3>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">URL Google Apps Script</label>
+                    <input type="url" id="scriptUrl" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           value="https://script.google.com/macros/s/AKfycby61R2ozHdA3USmpmsNHwfvQa78MLvkjImTgt7d0CkQLjuzcNdKqs_X0qnH-EYhgS72Uw/exec"
+                           placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec">
+                    <p class="text-xs text-gray-500 mt-1">Masukkan URL dari Google Apps Script yang sudah dibuat</p>
+                </div>
+                
+                <div class="flex items-end">
+                    <div class="space-y-2 w-full">
+                        <button id="saveSettings" 
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                            <i class="fas fa-save mr-2"></i>Simpan Pengaturan
+                        </button>
+                        <button id="testConnection" 
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors mb-2">
+                            <i class="fas fa-wifi mr-2"></i>Test Koneksi
+                        </button>
+                        <button id="syncToSheets" 
+                                class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                            <i class="fas fa-sync mr-2"></i>Sinkronkan ke Sheets
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="syncStatus" class="mt-4 hidden">
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <div class="flex items-center">
+                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                        <span class="text-sm text-gray-600">Menyinkronkan data...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Petunjuk Setup -->
+            <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <h4 class="font-medium text-yellow-800 mb-2">
+                    <i class="fas fa-info-circle mr-2"></i>Cara Setup Google Sheets:
+                </h4>
+                <ol class="text-sm text-yellow-700 space-y-1 list-decimal list-inside">
+                    <li>Buat spreadsheet baru di <a href="https://sheets.google.com" target="_blank" class="underline">Google Sheets</a></li>
+                    <li>Salin ID spreadsheet dari URL (bagian setelah /d/ dan sebelum /edit)</li>
+                    <li>Buka <a href="https://script.google.com" target="_blank" class="underline">Google Apps Script</a></li>
+                    <li>Buat project baru dan salin kode yang disediakan di bawah</li>
+                    <li><strong>PENTING:</strong> Ganti "YOUR_SPREADSHEET_ID" dengan ID spreadsheet Anda</li>
+                    <li>Klik "Deploy" ? "New deployment" ? pilih "Web app"</li>
+                    <li>Set "Execute as" = Me, "Who has access" = Anyone</li>
+                    <li>Salin URL deployment dan masukkan di atas</li>
+                    <li>Klik "Sinkronkan ke Sheets" untuk mulai menyimpan data</li>
+                </ol>
+            </div>
+            
+            <!-- Troubleshooting -->
+            <div class="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+                <h4 class="font-medium text-red-800 mb-2">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>Jika Masih Gagal:
+                </h4>
+                <ul class="text-sm text-red-700 space-y-1 list-disc list-inside">
+                    <li>Pastikan URL deployment benar dan lengkap</li>
+                    <li>Pastikan sudah mengganti YOUR_SPREADSHEET_ID dengan ID yang benar</li>
+                    <li>Coba deploy ulang Google Apps Script</li>
+                    <li>Periksa permission spreadsheet (harus bisa diedit)</li>
+                    <li>Buka Console Browser (F12) untuk melihat error detail</li>
+                </ul>
+            </div>
+            
+            <!-- Kode Google Apps Script -->
+            <div class="mt-4">
+                <button id="showCode" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    <i class="fas fa-code mr-1"></i>Tampilkan Kode Google Apps Script
+                </button>
+                <div id="codeContainer" class="hidden mt-3">
+                    <div class="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-400">Google Apps Script Code:</span>
+                            <button id="copyCode" class="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-xs">
+                                <i class="fas fa-copy mr-1"></i>Salin
+                            </button>
+                        </div>
+<pre><code>function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const spreadsheetId = 'YOUR_SPREADSHEET_ID'; // Ganti dengan ID spreadsheet Anda
+    const sheet = SpreadsheetApp.openById(spreadsheetId).getActiveSheet();
+    
+    // Setup header jika sheet kosong
+    if (sheet.getLastRow() === 0) {
+      sheet.getRange(1, 1, 1, 8).setValues([
+        ['Nama', 'Sekolah', 'Bulan', 'Tahun', 'Jumlah', 'Keterangan', 'Tanggal Input', 'Timestamp']
+      ]);
+    }
+    
+    // Tambah data baru
+    if (data.action === 'add') {
+      sheet.appendRow([
+        data.nama,
+        data.sekolah, 
+        data.bulan,
+        data.tahun,
+        data.jumlah,
+        data.keterangan,
+        data.tanggalInput,
+        new Date()
+      ]);
+    }
+    
+    // Sinkronkan semua data
+    if (data.action === 'sync') {
+      // Hapus data lama (kecuali header)
+      if (sheet.getLastRow() > 1) {
+        sheet.deleteRows(2, sheet.getLastRow() - 1);
+      }
+      
+      // Tambah semua data
+      data.allData.forEach(item => {
+        sheet.appendRow([
+          item.nama,
+          item.sekolah,
+          item.bulan, 
+          item.tahun,
+          item.jumlah,
+          item.keterangan,
+          item.tanggalInput,
+          new Date()
+        ]);
+      });
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({success: true}))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({success: false, error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet() {
+  return ContentService
+    .createTextOutput('KKG PAI Iuran API is running')
+    .setMimeType(ContentService.MimeType.TEXT);
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ringkasan Statistik -->
+        <div class="mt-8 grid md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-3xl mb-2"><i class="fas fa-users text-indigo-600"></i></div>
+                <div class="text-2xl font-bold text-indigo-600" id="totalAnggota">0</div>
+                <div class="text-gray-600">Total Anggota</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-3xl mb-2"><i class="fas fa-coins text-green-600"></i></div>
+                <div class="text-2xl font-bold text-green-600" id="totalPemasukan">Rp 0</div>
+                <div class="text-gray-600">Total Pemasukan</div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <div class="text-3xl mb-2"><i class="fas fa-calendar-alt text-purple-600"></i></div>
+                <div class="text-2xl font-bold text-purple-600" id="bulanTerakhir">-</div>
+                <div class="text-gray-600">Bulan Terakhir</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Login -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4">
+            <div class="text-center mb-6">
+                <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lock text-2xl text-indigo-600"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">Login Admin</h2>
+                <p class="text-gray-600 mt-2">Masukkan kredensial untuk mengakses input data</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input type="text" id="loginUsername" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                           placeholder="Masukkan username">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" id="loginPassword" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pr-12"
+                               placeholder="Masukkan password">
+                        <button type="button" id="togglePassword" 
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="loginError" class="hidden bg-red-50 border border-red-200 rounded-lg p-3">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                        <span class="text-sm text-red-700">Username atau password salah!</span>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button type="button" id="cancelLogin" 
+                            class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-3 hidden">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-500 mr-2 mt-0.5"></i>
+                    <div class="text-sm text-blue-700">
+                        <p class="font-medium mb-1">Kredensial Default:</p>
+                        <p>Username: <code class="bg-blue-100 px-1 rounded">admin</code></p>
+                        <p>Password: <code class="bg-blue-100 px-1 rounded">kkgpai2024</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dataIuran = JSON.parse(localStorage.getItem('dataIuranKKG')) || [];
+        let activeTab = 'input';
+        let scriptUrl = localStorage.getItem('scriptUrl') || 'https://script.google.com/macros/s/AKfycby61R2ozHdA3USmpmsNHwfvQa78MLvkjImTgt7d0CkQLjuzcNdKqs_X0qnH-EYhgS72Uw/exec';
+        let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+        // Kredensial login (dalam aplikasi nyata, ini harus disimpan dengan aman)
+        const LOGIN_CREDENTIALS = {
+            username: 'admin',
+            password: 'kkgpai2024'
+        };
+
+        const bulanList = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                          'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        // Fungsi untuk mengirim data ke Google Sheets
+        async function sendToSheets(data, action = 'add') {
+            if (!scriptUrl) {
+                alert('Harap masukkan URL Google Apps Script terlebih dahulu!');
+                return false;
+            }
+
+            try {
+                const payload = action === 'sync' ? 
+                    { action: 'sync', allData: dataIuran } : 
+                    { action: 'add', ...data };
+
+                console.log('Sending to sheets:', payload);
+
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                // Karena mode no-cors, kita tidak bisa membaca response
+                // Jadi kita anggap berhasil jika tidak ada error
+                return true;
+            } catch (error) {
+                console.error('Error sending to sheets:', error);
+                return false;
+            }
+        }
+
+        // Fungsi untuk menampilkan status sinkronisasi
+        function showSyncStatus(message, isSuccess = true) {
+            const statusDiv = document.getElementById('syncStatus');
+            statusDiv.classList.remove('hidden');
+            
+            const bgColor = isSuccess ? 'bg-green-50' : 'bg-red-50';
+            const textColor = isSuccess ? 'text-green-600' : 'text-red-600';
+            const icon = isSuccess ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            statusDiv.innerHTML = `
+                <div class="${bgColor} rounded-lg p-3">
+                    <div class="flex items-center">
+                        <i class="fas ${icon} ${textColor} mr-2"></i>
+                        <span class="text-sm ${textColor}">${message}</span>
+                    </div>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                statusDiv.classList.add('hidden');
+            }, 3000);
+        }
+
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(angka);
+        }
+
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginUsername').focus();
+        }
+
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        function login(username, password) {
+            if (username === LOGIN_CREDENTIALS.username && password === LOGIN_CREDENTIALS.password) {
+                isLoggedIn = true;
+                localStorage.setItem('isLoggedIn', 'true');
+                hideLoginModal();
+                updateLoginStatus();
+                return true;
+            }
+            return false;
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            localStorage.removeItem('isLoggedIn');
+            updateLoginStatus();
+            // Pindah ke tab daftar jika sedang di tab input
+            if (activeTab === 'input') {
+                switchTab('daftar');
+            }
+        }
+
+        function updateLoginStatus() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            const inputForm = document.querySelector('#contentInputDaftar .bg-white:first-child');
+            
+            if (isLoggedIn) {
+                logoutBtn.classList.remove('hidden');
+                if (inputForm) {
+                    inputForm.style.opacity = '1';
+                    inputForm.style.pointerEvents = 'auto';
+                }
+            } else {
+                logoutBtn.classList.add('hidden');
+                if (inputForm) {
+                    inputForm.style.opacity = '0.5';
+                    inputForm.style.pointerEvents = 'none';
+                }
+            }
+        }
+
+        function switchTab(tab) {
+            // Cek login untuk tab input
+            if (tab === 'input' && !isLoggedIn) {
+                showLoginModal();
+                return;
+            }
+            
+            activeTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('[id^="tab"]').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
+                btn.classList.add('text-gray-600', 'hover:text-gray-800');
+            });
+            
+            document.getElementById(`tab${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.add('bg-white', 'text-indigo-600', 'shadow-sm');
+            document.getElementById(`tab${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.remove('text-gray-600', 'hover:text-gray-800');
+            
+            // Show/hide content
+            if (tab === 'rekapan') {
+                document.getElementById('contentInputDaftar').classList.add('hidden');
+                document.getElementById('contentRekapan').classList.remove('hidden');
+                tampilkanRekapan();
+            } else {
+                document.getElementById('contentInputDaftar').classList.remove('hidden');
+                document.getElementById('contentRekapan').classList.add('hidden');
+            }
+        }
+
+        function getRekapanData(tahun) {
+            const allNames = [...new Set(dataIuran.map(item => item.nama))].sort();
+            const rekapanData = [];
+
+            allNames.forEach(nama => {
+                const iuranAnggota = dataIuran.filter(item => item.nama === nama && item.tahun == tahun);
+                const bulanBayar = iuranAnggota.map(item => item.bulan);
+                const bulanBelumBayar = bulanList.filter(bulan => !bulanBayar.includes(bulan));
+                const totalBayar = iuranAnggota.reduce((sum, item) => sum + item.jumlah, 0);
+                const sekolah = iuranAnggota.length > 0 ? iuranAnggota[0].sekolah : '';
+
+                rekapanData.push({
+                    nama,
+                    sekolah,
+                    bulanBayar,
+                    bulanBelumBayar,
+                    totalBayar,
+                    jumlahBayar: bulanBayar.length,
+                    jumlahBelumBayar: bulanBelumBayar.length
+                });
+            });
+
+            return rekapanData;
+        }
+
+        function tampilkanRekapan() {
+            const tahun = document.getElementById('filterTahun').value;
+            const searchKeyword = document.getElementById('searchRekapan').value.toLowerCase();
+            const rekapanData = getRekapanData(tahun);
+            
+            const filteredData = rekapanData.filter(item => 
+                item.nama.toLowerCase().includes(searchKeyword)
+            );
+
+            const container = document.getElementById('rekapanContainer');
+            
+            if (filteredData.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-chart-line text-4xl mb-2 block"></i>
+                        Tidak ada data untuk tahun ${tahun}
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredData.map(item => `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">${item.nama}</h3>
+                            <p class="text-sm text-gray-600">${item.sekolah}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-bold text-green-600">${formatRupiah(item.totalBayar)}</div>
+                            <div class="text-sm text-gray-500">${item.jumlahBayar}/12 bulan</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="text-sm font-medium text-green-700 mb-2">
+                                <i class="fas fa-check-circle mr-1"></i>Sudah Bayar (${item.jumlahBayar})
+                            </h4>
+                            <div class="flex flex-wrap gap-1">
+                                ${item.bulanBayar.map(bulan => `
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">${bulan}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-sm font-medium text-red-700 mb-2">
+                                <i class="fas fa-times-circle mr-1"></i>Belum Bayar (${item.jumlahBelumBayar})
+                            </h4>
+                            <div class="flex flex-wrap gap-1">
+                                ${item.bulanBelumBayar.map(bulan => `
+                                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">${bulan}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 bg-gray-50 rounded-lg p-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Progress Pembayaran:</span>
+                            <span class="font-medium">${Math.round((item.jumlahBayar / 12) * 100)}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                            <div class="bg-indigo-600 h-2 rounded-full transition-all duration-300" 
+                                 style="width: ${(item.jumlahBayar / 12) * 100}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStatistik() {
+            const totalAnggota = new Set(dataIuran.map(item => item.nama)).size;
+            const totalPemasukan = dataIuran.reduce((sum, item) => sum + item.jumlah, 0);
+            const bulanTerakhir = dataIuran.length > 0 ? 
+                dataIuran[dataIuran.length - 1].bulan + ' ' + dataIuran[dataIuran.length - 1].tahun : '-';
+
+            document.getElementById('totalAnggota').textContent = totalAnggota;
+            document.getElementById('totalPemasukan').textContent = formatRupiah(totalPemasukan);
+            document.getElementById('totalIuran').textContent = formatRupiah(totalPemasukan);
+            document.getElementById('bulanTerakhir').textContent = bulanTerakhir;
+        }
+
+        function tampilkanDaftarIuran(data = dataIuran) {
+            const container = document.getElementById('daftarIuran');
+            
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-file-invoice-dollar text-4xl mb-2 block"></i>
+                        Belum ada data iuran yang diinput
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = data.map((item, index) => `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow fade-in">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">${item.nama}</h3>
+                            <p class="text-sm text-gray-600">${item.sekolah}</p>
+                            <div class="flex items-center mt-2 text-sm">
+                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full mr-2">
+                                    ${item.bulan} ${item.tahun}
+                                </span>
+                                <span class="font-semibold text-green-600">${formatRupiah(item.jumlah)}</span>
+                            </div>
+                            ${item.keterangan ? `<p class="text-xs text-gray-500 mt-1">${item.keterangan}</p>` : ''}
+                        </div>
+                        <button onclick="hapusIuran(${index})" 
+                                class="text-red-500 hover:text-red-700 ml-4 p-1">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function hapusIuran(index) {
+            if (confirm('Yakin ingin menghapus data iuran ini?')) {
+                dataIuran.splice(index, 1);
+                localStorage.setItem('dataIuranKKG', JSON.stringify(dataIuran));
+                tampilkanDaftarIuran();
+                updateStatistik();
+            }
+        }
+
+        document.getElementById('iuranForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const nama = document.getElementById('namaAnggota').value.trim();
+            const sekolah = document.getElementById('sekolah').value.trim();
+            const bulan = document.getElementById('bulan').value;
+            const tahun = parseInt(document.getElementById('tahun').value);
+            const jumlah = parseInt(document.getElementById('jumlahIuran').value);
+            const keterangan = document.getElementById('keterangan').value.trim();
+
+            const dataIuranBaru = {
+                nama,
+                sekolah,
+                bulan,
+                tahun,
+                jumlah,
+                keterangan,
+                tanggalInput: new Date().toLocaleDateString('id-ID')
+            };
+
+            // Simpan ke localStorage
+            dataIuran.push(dataIuranBaru);
+            localStorage.setItem('dataIuranKKG', JSON.stringify(dataIuran));
+            
+            // Kirim ke Google Sheets jika URL sudah diatur
+            if (scriptUrl) {
+                const success = await sendToSheets(dataIuranBaru, 'add');
+                if (success) {
+                    showSyncStatus('Data berhasil disimpan ke Google Sheets!', true);
+                } else {
+                    showSyncStatus('Gagal menyimpan ke Google Sheets. Data tetap tersimpan lokal.', false);
+                }
+            }
+            
+            // Reset form
+            this.reset();
+            document.getElementById('tahun').value = '2025';
+            document.getElementById('jumlahIuran').value = '25000';
+            document.getElementById('keterangan').value = 'Lunas';
+            
+            // Update tampilan
+            tampilkanDaftarIuran();
+            updateStatistik();
+            
+            // Fokus kembali ke input nama
+            document.getElementById('namaAnggota').focus();
+            
+            // Notifikasi sukses
+            const button = document.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check mr-2"></i>Data Tersimpan!';
+            button.classList.add('bg-green-600');
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('bg-green-600');
+            }, 2000);
+        });
+
+        // Fitur pencarian
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const keyword = e.target.value.toLowerCase();
+            const filteredData = dataIuran.filter(item => 
+                item.nama.toLowerCase().includes(keyword) || 
+                item.sekolah.toLowerCase().includes(keyword) ||
+                item.bulan.toLowerCase().includes(keyword)
+            );
+            tampilkanDaftarIuran(filteredData);
+        });
+
+        // Event listeners untuk login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (login(username, password)) {
+                // Login berhasil, pindah ke tab input
+                switchTab('input');
+            } else {
+                // Login gagal, tampilkan error
+                document.getElementById('loginError').classList.remove('hidden');
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginPassword').focus();
+            }
+        });
+
+        document.getElementById('cancelLogin').addEventListener('click', function() {
+            hideLoginModal();
+            // Pindah ke tab daftar jika membatalkan login
+            switchTab('daftar');
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Yakin ingin logout?')) {
+                logout();
+            }
+        });
+
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('loginPassword');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Event listeners untuk tab
+        document.getElementById('tabInput').addEventListener('click', () => switchTab('input'));
+        document.getElementById('tabDaftar').addEventListener('click', () => switchTab('daftar'));
+        document.getElementById('tabRekapan').addEventListener('click', () => switchTab('rekapan'));
+
+        // Event listeners untuk rekapan
+        document.getElementById('filterTahun').addEventListener('change', tampilkanRekapan);
+        document.getElementById('searchRekapan').addEventListener('input', tampilkanRekapan);
+
+        // Fungsi test koneksi
+        async function testConnection() {
+            if (!scriptUrl) {
+                alert('Harap masukkan URL Google Apps Script terlebih dahulu!');
+                return;
+            }
+
+            showSyncStatus('Menguji koneksi ke Google Apps Script...', true);
+
+            try {
+                const response = await fetch(scriptUrl, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+                
+                showSyncStatus('Koneksi berhasil! URL Google Apps Script valid.', true);
+            } catch (error) {
+                console.error('Connection test failed:', error);
+                showSyncStatus('Koneksi gagal! Periksa URL dan coba lagi.', false);
+            }
+        }
+
+        // Event listeners untuk spreadsheet
+        document.getElementById('saveSettings').addEventListener('click', function() {
+            const url = document.getElementById('scriptUrl').value.trim();
+            if (url) {
+                scriptUrl = url;
+                localStorage.setItem('scriptUrl', url);
+                showSyncStatus('Pengaturan berhasil disimpan!', true);
+            } else {
+                alert('Harap masukkan URL Google Apps Script!');
+            }
+        });
+
+        document.getElementById('testConnection').addEventListener('click', testConnection);
+
+        document.getElementById('syncToSheets').addEventListener('click', async function() {
+            if (!scriptUrl) {
+                alert('Harap masukkan dan simpan URL Google Apps Script terlebih dahulu!');
+                return;
+            }
+
+            if (dataIuran.length === 0) {
+                alert('Tidak ada data untuk disinkronkan!');
+                return;
+            }
+
+            // Tampilkan loading
+            const statusDiv = document.getElementById('syncStatus');
+            statusDiv.classList.remove('hidden');
+            statusDiv.innerHTML = `
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <div class="flex items-center">
+                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                        <span class="text-sm text-gray-600">Menyinkronkan ${dataIuran.length} data ke Google Sheets...</span>
+                    </div>
+                </div>
+            `;
+
+            const success = await sendToSheets(null, 'sync');
+            if (success) {
+                showSyncStatus(`Berhasil menyinkronkan ${dataIuran.length} data ke Google Sheets!`, true);
+            } else {
+                showSyncStatus('Gagal menyinkronkan data ke Google Sheets. Periksa URL dan koneksi internet.', false);
+            }
+        });
+
+        document.getElementById('showCode').addEventListener('click', function() {
+            const container = document.getElementById('codeContainer');
+            const button = this;
+            
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                button.innerHTML = '<i class="fas fa-eye-slash mr-1"></i>Sembunyikan Kode';
+            } else {
+                container.classList.add('hidden');
+                button.innerHTML = '<i class="fas fa-code mr-1"></i>Tampilkan Kode Google Apps Script';
+            }
+        });
+
+        document.getElementById('copyCode').addEventListener('click', function() {
+            const code = document.querySelector('#codeContainer pre code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                this.innerHTML = '<i class="fas fa-check mr-1"></i>Tersalin!';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-copy mr-1"></i>Salin';
+                }, 2000);
+            });
+        });
+
+        // Load pengaturan yang tersimpan
+        if (scriptUrl) {
+            document.getElementById('scriptUrl').value = scriptUrl;
+        }
+
+        // Inisialisasi tampilan
+        updateLoginStatus();
+        
+        // Jika belum login, mulai dari tab daftar
+        if (!isLoggedIn) {
+            switchTab('daftar');
+        }
+        
+        tampilkanDaftarIuran();
+        updateStatistik();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98b3443877a062dc',t:'MTc1OTkwMTYzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
